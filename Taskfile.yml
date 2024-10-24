@@ -2,23 +2,24 @@ version: '3'
 
 tasks:
   docker_build:
-    cmds:
-      - docker compose build
+    cmd: docker compose build
   up:
-    cmds:
-      - docker compose up -d
+    cmd: docker compose up -d
   down:
-    cmds:
-      - docker compose down
+    cmd: docker compose down
   stop:
-    cmds:
-      - docker compose stop
+    cmd: docker compose stop
   bash:
-    cmds:
-      - docker compose exec app /bin/bash
+    cmd: docker compose exec app /bin/bash
   yarn:
-    cmds:
-      - docker compose exec app yarn
+    cmd: docker compose exec app yarn
   dev:
-    cmds:
-      - docker compose exec app yarn dev
+    cmd: docker compose exec app yarn dev
+  lint:
+    cmd: docker compose exec app yarn lint
+  typecheck:
+    cmd: docker compose exec app yarn typecheck
+  prettier-check:
+    cmd: docker compose exec app yarn prettier:check
+  prettier:
+    cmd: docker compose exec app yarn prettier
