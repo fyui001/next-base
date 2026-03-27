@@ -1,19 +1,29 @@
 FROM node:25.2-slim AS base
 
-EXPOSE 3000
-ENV PORT=3000
+FROM base AS builder
 
-FROM base
+WORKDIR /app
+
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+COPY . .
+RUN yarn build
+
+FROM base AS runner
 
 WORKDIR /app
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
 
-COPY --chown=nodejs:nodejs ./public ./public
-COPY --chown=nodejs:nodejs ./.next/standalone ./
-COPY --chown=nodejs:nodejs ./.next/static ./.next/static
+COPY --from=builder --chown=nodejs:nodejs /app/public ./public
+COPY --from=builder --chown=nodejs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nodejs:nodejs /app/.next/static ./.next/static
 
 USER nodejs
+
+EXPOSE 3000
+ENV PORT=3000
 
 CMD ["node", "server.js"]
