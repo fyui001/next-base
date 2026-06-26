@@ -1,6 +1,7 @@
 services:
   app:
     image: node:25.2-slim
+    working_dir: /code
     volumes:
       - .:/code
     tty: true
