@@ -16,6 +16,7 @@
     "test-storybook:ci": "concurrently -k -s first -n SB,TEST -c magenta,blue \"http-server storybook-static --port 6006 --silent\" \"wait-on http://127.0.0.1:6006 && test-storybook --url http://127.0.0.1:6006 --maxWorkers=2\""
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.4.0",
     "@tanstack/react-table": "^8",
     "axios": "^1.13.2",
     "class-variance-authority": "^0.7.1",
@@ -27,8 +28,10 @@
     "radix-ui": "^1.4.3",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "react-hook-form": "^7.80.0",
     "sonner": "^2.0.7",
-    "tailwind-merge": "^3.6.0"
+    "tailwind-merge": "^3.6.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@storybook/addon-a11y": "^10",
