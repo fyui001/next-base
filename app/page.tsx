@@ -1,4 +1,6 @@
+import Link from 'next/link'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
+import { Button } from '@/components/ui/button'
 
 export default function Home() {
   return (
@@ -13,6 +15,9 @@ export default function Home() {
           light/dark/system theme, a generic data table, and a Storybook that
           showcases and verifies every component.
         </p>
+        <Button asChild>
+          <Link href="/users">View the example users table</Link>
+        </Button>
       </div>
     </main>
   )
