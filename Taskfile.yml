@@ -15,6 +15,8 @@ tasks:
     cmd: docker compose exec app yarn
   dev:
     cmd: docker compose exec app yarn dev
+  storybook:
+    cmd: docker compose exec app yarn storybook
   lint:
     cmd: docker compose exec app yarn lint
   typecheck:
@@ -23,3 +25,5 @@ tasks:
     cmd: docker compose exec app yarn prettier:check
   prettier:
     cmd: docker compose exec app yarn prettier
+  test:stories:
+    cmd: docker compose run --rm storybook-runner
