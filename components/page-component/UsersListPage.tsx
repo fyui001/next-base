@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Search } from 'lucide-react'
+import { toast } from 'sonner'
 import { Input } from '@/components/ui/input'
 import UsersListTable from '@/components/users/UsersListTable'
 import { useListUrlState } from '@/hooks/useListUrlState'
@@ -38,6 +39,11 @@ export default function UsersListPage({ initialData }: UsersListPageProps) {
     setLoading(true)
     try {
       setData(await listUsers(dataSource, query))
+    } catch (error) {
+      // Latent against the in-memory mock, but surfaces real API/DB failures
+      // instead of silently leaving stale rows on screen.
+      console.error('[UsersListPage] failed to load users', error)
+      toast.error('Could not load users. Please try again.')
     } finally {
       setLoading(false)
     }

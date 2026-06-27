@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs'
-import { expect, userEvent, within } from 'storybook/test'
+import { expect, userEvent, waitFor, within } from 'storybook/test'
 import type { ColumnDef } from '@tanstack/react-table'
 import DataTable from '@/components/common/DataTable'
 import { Badge } from '@/components/ui/badge'
@@ -135,8 +135,11 @@ export const Default: Story = {
     await expect(
       canvas.queryByRole('columnheader', { name: 'Email' }),
     ).toBeNull()
-    await expect(
-      localStorage.getItem('next-base-column-visibility-datatable-demo'),
-    ).toContain('email')
+    // The visibility write happens in an effect, so poll for it.
+    await waitFor(() =>
+      expect(
+        localStorage.getItem('next-base-column-visibility-datatable-demo'),
+      ).toContain('email'),
+    )
   },
 }

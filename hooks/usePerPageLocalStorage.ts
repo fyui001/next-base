@@ -94,6 +94,14 @@ export function usePerPageLocalStorage(
 
   const [perPage, setPerPageState] = useState<PageSize>(initial.perPage)
 
+  // Mirror of the latest perPage so cross-instance/tab handlers can compare
+  // against the current value without performing side effects inside a state
+  // updater (which React may double-invoke in StrictMode).
+  const perPageRef = useRef(perPage)
+  useEffect(() => {
+    perPageRef.current = perPage
+  })
+
   const onInitialMismatchRef = useRef(options.onInitialMismatch)
   useEffect(() => {
     onInitialMismatchRef.current = options.onInitialMismatch
@@ -134,12 +142,9 @@ export function usePerPageLocalStorage(
   useEffect(() => {
     if (typeof window === 'undefined') return
     function applyExternalChange(next: PageSize | null) {
-      if (next == null) return
-      setPerPageState((prev) => {
-        if (prev === next) return prev
-        runMismatchCallback()
-        return next
-      })
+      if (next == null || next === perPageRef.current) return
+      setPerPageState(next)
+      runMismatchCallback()
     }
     function handleSameWindow(e: Event) {
       applyExternalChange((e as CustomEvent<PageSize>).detail)

@@ -105,14 +105,6 @@ function writeStoredVisibility(storageKey: string, state: VisibilityState) {
   }
 }
 
-function removeStoredVisibility(storageKey: string) {
-  try {
-    localStorage.removeItem(STORAGE_PREFIX + storageKey)
-  } catch {
-    // ignore
-  }
-}
-
 /**
  * Derives the initial `VisibilityState` from `columnVisibilityOptions`. Only
  * `defaultVisible: false` columns are added (as `{ [id]: false }`); everything
@@ -152,7 +144,7 @@ export default function DataTable<TData>({
   // value. `defaultVisibility` is derived from columnVisibilityOptions so the
   // `defaultVisible` field stays the single source of truth.
   const defaultVisibility = deriveDefaultVisibility(columnVisibilityOptions)
-  const [columnVisibility, setColumnVisibilityRaw] =
+  const [columnVisibility, setColumnVisibility] =
     useState<VisibilityState>(defaultVisibility)
 
   const didHydrateRef = useRef(false)
@@ -161,29 +153,26 @@ export default function DataTable<TData>({
     didHydrateRef.current = true
     if (!storageKey) return
     const stored = readStoredVisibility(storageKey)
-    if (stored) setColumnVisibilityRaw({ ...defaultVisibility, ...stored })
+    if (stored) setColumnVisibility({ ...defaultVisibility, ...stored })
     // Hydrate once on mount (storageKey is expected to be a stable const).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const setColumnVisibility = useCallback(
-    (
-      updater: VisibilityState | ((prev: VisibilityState) => VisibilityState),
-    ) => {
-      setColumnVisibilityRaw((prev) => {
-        const next = typeof updater === 'function' ? updater(prev) : updater
-        if (storageKey) writeStoredVisibility(storageKey, next)
-        return next
-      })
-    },
-    [storageKey],
-  )
+  // Persist on change in an effect (not inside the state updater, which React
+  // may double-invoke in StrictMode). Skip the first run so the SSR-default
+  // render does not overwrite a stored value before hydration applies it.
+  const skipFirstWriteRef = useRef(true)
+  useEffect(() => {
+    if (skipFirstWriteRef.current) {
+      skipFirstWriteRef.current = false
+      return
+    }
+    if (storageKey) writeStoredVisibility(storageKey, columnVisibility)
+  }, [columnVisibility, storageKey])
 
   const resetColumnVisibility = useCallback(() => {
-    setColumnVisibilityRaw(defaultVisibility)
-    if (storageKey) removeStoredVisibility(storageKey)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storageKey])
+    setColumnVisibility(deriveDefaultVisibility(columnVisibilityOptions))
+  }, [columnVisibilityOptions])
 
   const table = useReactTable({
     data,
