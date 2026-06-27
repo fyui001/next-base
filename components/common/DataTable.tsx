@@ -377,9 +377,7 @@ export default function DataTable<TData>({
                         truncate
                           ? 'max-w-[200px] overflow-hidden text-ellipsis whitespace-nowrap'
                           : '',
-                        cellStickyDir === 'left'
-                          ? 'sticky z-10 bg-background'
-                          : '',
+                        cellStickyDir === 'left' ? 'sticky z-10 bg-card' : '',
                       ]
                         .filter(Boolean)
                         .join(' ') || undefined
