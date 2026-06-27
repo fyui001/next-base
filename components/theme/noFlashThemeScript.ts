@@ -1,7 +1,9 @@
 /**
- * When the theme cookie is unset, SSR cannot read `prefers-color-scheme`, so we
- * run this inline script before hydration to apply the `dark` class. This
- * prevents the "light flash, then switch to dark after mount" flicker.
+ * When the resolved theme is `system` (the cookie is unset or set to `system`),
+ * SSR cannot read `prefers-color-scheme`, so we run this inline script before
+ * hydration to apply the `dark` class. This prevents the "light flash, then
+ * switch to dark after mount" flicker. The layout injects it whenever there is
+ * no explicit light/dark mode.
  *
  * The content is a constant string with no user input, so there is no XSS risk.
  */

@@ -12,9 +12,11 @@ import { PAGE_SIZES, type PageSize } from '@/types/dataTable'
  * - Invalid / out-of-range / Storage-exception values fall back to
  *   `defaultPerPage` and emit `console.warn` (never a silent failure).
  *
- * SSR / hydration note: the first paint must use the parent Server Component's
- * initial value, not this hook (the `useState` lazy initializer does not run on
- * the server). This hook is for the "refetch after mount" trigger.
+ * SSR / hydration note: on the server this hook yields `defaultPerPage`
+ * (localStorage is unavailable), but on the client the lazy initializer reads
+ * the persisted value, which may differ. So the first paint must use the parent
+ * Server Component's initial value rather than this hook's `perPage`, to avoid a
+ * hydration mismatch. This hook is for the post-mount refetch trigger.
  */
 
 export const STORAGE_PREFIX = 'next-base-per-page-'
