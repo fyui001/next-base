@@ -7,6 +7,7 @@ services:
     tty: true
     ports:
       - 8080:3000
+      - 6006:6006
 
   # Runs the Storybook test-runner (Playwright-powered) against a built,
   # statically-served Storybook. Uses the official Playwright image so browsers
