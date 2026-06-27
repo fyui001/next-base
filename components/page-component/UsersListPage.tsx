@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Search } from 'lucide-react'
 import { toast } from 'sonner'
 import { Input } from '@/components/ui/input'
-import PageHeader from '@/components/common/PageHeader'
 import UsersListTable from '@/components/users/UsersListTable'
 import { useListUrlState } from '@/hooks/useListUrlState'
 import { usePerPageLocalStorage } from '@/hooks/usePerPageLocalStorage'
@@ -84,10 +83,6 @@ export default function UsersListPage({ initialData }: UsersListPageProps) {
 
   return (
     <div className="flex h-full flex-col gap-4 p-6">
-      <PageHeader
-        title="Users"
-        description="Example list screen wired through the data-access seam."
-      />
       <div className="relative w-72">
         <Search className="absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input

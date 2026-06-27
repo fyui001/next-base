@@ -48,7 +48,7 @@ app/(app)/{module}/page.tsx               Server Component: calls a repository, 
 components/layout/{AppShell,SideNav}.tsx  Sidebar + header chrome; navConfig.tsx lists nav items
 components/page-component/{Module}*.tsx   Client: URL/list state, per-page persistence, refetch
 components/{feature}/*                     Client: ColumnDef[] → DataTable; feature UI
-components/common/{DataTable,PageHeader}   Generic table + page heading
+components/common/DataTable.tsx           Generic table (sticky header, relative widths, fill&scroll)
 components/ui/*                            shadcn primitives
 repository/{module}Repository.ts          Typed functions; take a DataSource, return typed DTOs
 lib/data-source/                          The seam: DataSource interface + in-memory mock
@@ -65,8 +65,14 @@ The `@/*` import alias maps to the repo root (`@/components/ui/button`, …).
 Routes under `app/(app)/` render inside `AppShell` (collapsible sidebar +
 header + a fill main area). The example screens — `/dashboard`, `/users`,
 `/settings` — all live there; list pages fill the viewport and scroll
-internally. Edit `components/layout/navConfig.tsx` to change the sidebar items
-and app name. Public pages (e.g. the landing `/`) stay outside the group.
+internally. The header shows the page title, derived from the active item in
+`components/layout/navConfig.tsx` — edit that file to change the sidebar items,
+app name, and per-route titles. Public pages (e.g. the landing `/`) stay
+outside the group.
+
+Storybook leads with the composed screens (the `Pages/*` stories render the
+real Dashboard / Users / Settings views inside the shell); the raw `ui/*`
+primitives are grouped last.
 
 ## Theme
 

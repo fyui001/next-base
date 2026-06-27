@@ -31,6 +31,12 @@ function WithTheme({
 
 const preview: Preview = {
   parameters: {
+    // Surface the composed screens and layout first; raw primitives last.
+    options: {
+      storySort: {
+        order: ['Pages', 'Layout', 'Common', 'Forms', 'Theme', 'UI'],
+      },
+    },
     controls: {
       matchers: {
         color: /(background|color)$/i,

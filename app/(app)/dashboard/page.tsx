@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import PageHeader from '@/components/common/PageHeader'
 import {
   Card,
   CardDescription,
@@ -32,10 +31,6 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex h-full flex-col gap-6 overflow-y-auto p-6">
-      <PageHeader
-        title="Dashboard"
-        description="An overview built from the data-access seam."
-      />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
           <Card key={stat.label}>

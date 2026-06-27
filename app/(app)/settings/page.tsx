@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import PageHeader from '@/components/common/PageHeader'
 import {
   Card,
   CardContent,
@@ -14,10 +13,6 @@ export const metadata: Metadata = { title: 'Settings' }
 export default function SettingsPage() {
   return (
     <div className="flex h-full flex-col gap-6 overflow-y-auto p-6">
-      <PageHeader
-        title="Settings"
-        description="An example form built with the shadcn form primitives."
-      />
       <Card className="max-w-lg">
         <CardHeader>
           <CardTitle>Profile</CardTitle>

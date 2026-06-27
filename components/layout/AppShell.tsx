@@ -2,6 +2,7 @@
 
 import { useCallback, useState, useSyncExternalStore } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { LogOut, Menu, PanelLeft, User } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -16,7 +17,17 @@ import {
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import SideNav from '@/components/layout/SideNav'
-import { APP_NAME } from '@/components/layout/navConfig'
+import { APP_NAME, NAV_ITEMS } from '@/components/layout/navConfig'
+
+/** Page title shown in the header — derived from the active nav item. */
+function usePageTitle() {
+  const pathname = usePathname()
+  return (
+    NAV_ITEMS.find(
+      (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
+    )?.label ?? APP_NAME
+  )
+}
 
 const SIDEBAR_WIDTH = 256
 const SIDEBAR_COLLAPSED_WIDTH = 56
@@ -95,6 +106,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     () => false,
   )
   const [mobileOpen, setMobileOpen] = useState(false)
+  const pageTitle = usePageTitle()
 
   const toggleCollapsed = useCallback(() => {
     setCollapsedCookie(!readCollapsed())
@@ -155,7 +167,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               <PanelLeft className="size-4" />
             </Button>
           )}
-          {isMobile && <span className="font-semibold">{APP_NAME}</span>}
+          <h1 className="text-base font-semibold">{pageTitle}</h1>
           <div className="flex-1" />
           <ThemeToggle />
           <UserMenu />
