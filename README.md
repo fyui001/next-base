@@ -43,20 +43,30 @@ task test:stories                        # build + run the Storybook test-runner
 ## Project structure
 
 ```
-app/{module}/page.tsx                    Server Component: calls a repository, passes initial data
-components/page-component/{Module}*.tsx  Client: URL/list state, per-page persistence, refetch
-components/{feature}/*                    Client: ColumnDef[] → DataTable; feature UI
-components/common/DataTable.tsx           Generic table (sticky header, relative widths, fill&scroll)
-components/ui/*                           shadcn primitives
+app/(app)/layout.tsx                      Wraps the app routes in the AppShell
+app/(app)/{module}/page.tsx               Server Component: calls a repository, passes initial data
+components/layout/{AppShell,SideNav}.tsx  Sidebar + header chrome; navConfig.tsx lists nav items
+components/page-component/{Module}*.tsx   Client: URL/list state, per-page persistence, refetch
+components/{feature}/*                     Client: ColumnDef[] → DataTable; feature UI
+components/common/{DataTable,PageHeader}   Generic table + page heading
+components/ui/*                            shadcn primitives
 repository/{module}Repository.ts          Typed functions; take a DataSource, return typed DTOs
 lib/data-source/                          The seam: DataSource interface + in-memory mock
 lib/dataSource.ts                         The app's DataSource instance (swap point)
 hooks/                                    useListUrlState, usePerPageLocalStorage
 types/dataTable.ts                        SortState, PaginationState, PageSize, column types
-stories/                                  One story per component (+ DataTable, theme, form)
+stories/                                  One story per component (+ DataTable, AppShell, form)
 ```
 
 The `@/*` import alias maps to the repo root (`@/components/ui/button`, …).
+
+## App shell
+
+Routes under `app/(app)/` render inside `AppShell` (collapsible sidebar +
+header + a fill main area). The example screens — `/dashboard`, `/users`,
+`/settings` — all live there; list pages fill the viewport and scroll
+internally. Edit `components/layout/navConfig.tsx` to change the sidebar items
+and app name. Public pages (e.g. the landing `/`) stay outside the group.
 
 ## Theme
 

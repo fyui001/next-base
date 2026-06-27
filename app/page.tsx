@@ -16,7 +16,7 @@ export default function Home() {
           showcases and verifies every component.
         </p>
         <Button asChild>
-          <Link href="/users">View the example users table</Link>
+          <Link href="/dashboard">Open the app</Link>
         </Button>
       </div>
     </main>

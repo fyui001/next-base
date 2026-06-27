@@ -161,7 +161,6 @@ export function usePerPageLocalStorage(
       window.removeEventListener(SAME_WINDOW_SYNC_EVENT, handleSameWindow)
       window.removeEventListener('storage', handleStorage)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Fire onInitialMismatch once after mount when stored != default.
