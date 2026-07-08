@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { PAGE_SIZES, type PageSize } from '@/types/dataTable'
 
 /**
@@ -127,18 +127,15 @@ export function usePerPageLocalStorage(
     }
   }
 
-  const setPerPageRef = useRef<((next: PageSize) => void) | null>(null)
-  if (setPerPageRef.current === null) {
-    setPerPageRef.current = (next: PageSize) => {
-      setPerPageState(next)
-      writeStoredPerPage(next)
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(
-          new CustomEvent<PageSize>(SAME_WINDOW_SYNC_EVENT, { detail: next }),
-        )
-      }
+  const setPerPage = useCallback((next: PageSize) => {
+    setPerPageState(next)
+    writeStoredPerPage(next)
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent<PageSize>(SAME_WINDOW_SYNC_EVENT, { detail: next }),
+      )
     }
-  }
+  }, [])
 
   // Receive per-page changes from other instances (same window) / tabs (storage).
   useEffect(() => {
@@ -174,6 +171,6 @@ export function usePerPageLocalStorage(
 
   return {
     perPage,
-    setPerPage: setPerPageRef.current,
+    setPerPage,
   }
 }
