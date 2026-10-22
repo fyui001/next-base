@@ -12,9 +12,9 @@ repository function + columns — not by re-deriving infrastructure.
 
 - **Next.js 16** (App Router, RSC) + **React 19** + **TypeScript** (strict)
 - **Tailwind CSS v4** (CSS-first `@theme`) + **shadcn/ui** (`new-york`, `zinc`)
-- Custom **light/dark/system theme** (cookie + middleware + no-flash script; no
+- Custom **light/dark/system theme** (cookie + proxy + no-flash script; no
   `next-themes`)
-- **@tanstack/react-table v8** via a generic `DataTable`
+- **@tanstack/react-table v9** via a generic `DataTable`
 - **react-hook-form + zod** for forms
 - **Storybook 10** + `@storybook/test-runner` (Playwright-powered) for the
   catalog and verification
@@ -77,7 +77,7 @@ primitives are grouped last.
 ## Theme
 
 Three states — light / dark / system. A cookie (`next-base-theme-mode`) is read
-by `middleware.ts` into an `x-theme-mode` header so the root layout can render
+by `proxy.ts` into an `x-theme-mode` header so the root layout can render
 the right theme at SSR; a no-flash inline script handles the `system` case
 before paint. Drop `<ThemeToggle />` anywhere inside the `ThemeProvider`.
 
