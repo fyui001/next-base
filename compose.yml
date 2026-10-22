@@ -1,6 +1,6 @@
 services:
   app:
-    image: node:25.2-slim
+    image: node:24.22.1-slim
     working_dir: /code
     volumes:
       - .:/code
@@ -15,7 +15,7 @@ services:
   # Reuses node_modules from the mounted volume (no install step).
   #   docker compose run --rm storybook-runner
   storybook-runner:
-    image: mcr.microsoft.com/playwright:v1.61.1-noble
+    image: mcr.microsoft.com/playwright:v1.64.1-noble
     working_dir: /code
     volumes:
       - .:/code

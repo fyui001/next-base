@@ -13,11 +13,11 @@ repository function + columns — not by re-deriving infrastructure.
 - **Framework**: Next.js 16 (App Router, RSC), React 19, TypeScript (strict).
 - **Styling**: Tailwind CSS v4 (CSS-first `@theme`), shadcn/ui (`new-york` style,
   `zinc` base color, CSS variables).
-- **Theme**: custom light/dark/system (cookie + middleware header + no-flash
+- **Theme**: custom light/dark/system (cookie + proxy header + no-flash
   inline script). No `next-themes`.
 - **Components**: shadcn/ui set, built on the unified `radix-ui` package + lucide
   icons.
-- **Table**: `@tanstack/react-table` v8 via a generic `DataTable`.
+- **Table**: `@tanstack/react-table` v9 via a generic `DataTable`.
 - **Forms**: react-hook-form + zod + `@hookform/resolvers` (shadcn `form`).
 - **Catalog & verification**: Storybook 10 (`@storybook/nextjs`, `addon-a11y`)
   verified with `@storybook/test-runner` (Playwright-powered).
@@ -70,7 +70,7 @@ GitHub Actions runs `lint` + `typecheck` on push/PR to `master`.
 
 ## Docker Config
 
-- Compose service: `app` (image `node:25.2-slim`, `working_dir: /code`, repo
+- Compose service: `app` (image `node:24.22.1-slim`, `working_dir: /code`, repo
   mounted at `/code`).
 - Dev server published at **http://localhost:8080** (`8080 -> 3000`).
 - Run everything through the container, e.g. `docker compose exec app yarn dev`.

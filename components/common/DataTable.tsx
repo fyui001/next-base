@@ -4,10 +4,13 @@ import type { CSSProperties, ReactNode } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   type ColumnDef,
-  type VisibilityState,
+  type ColumnVisibilityState,
+  type RowData,
+  columnVisibilityFeature,
   flexRender,
-  getCoreRowModel,
-  useReactTable,
+  metaHelper,
+  tableFeatures,
+  useTable,
 } from '@tanstack/react-table'
 import {
   ChevronDown,
@@ -46,13 +49,29 @@ import DataTableColumnVisibility from '@/components/common/DataTableColumnVisibi
 import {
   PAGE_SIZE_OPTIONS,
   type ColumnVisibilityOption,
+  type DataTableColumnMeta,
   type PaginationState,
   type SortDirection,
   type SortState,
 } from '@/types/dataTable'
 
-export interface DataTableProps<TData> {
-  columns: ColumnDef<TData, unknown>[]
+/**
+ * The feature set every DataTable is built with. Column definitions are typed
+ * against it via `DataTableColumnDef` so `meta` is checked at compile time.
+ */
+export const dataTableFeatures = tableFeatures({
+  columnVisibilityFeature,
+  columnMeta: metaHelper<DataTableColumnMeta>(),
+})
+
+export type DataTableColumnDef<TData extends RowData> = ColumnDef<
+  typeof dataTableFeatures,
+  TData,
+  unknown
+>
+
+export interface DataTableProps<TData extends RowData> {
+  columns: DataTableColumnDef<TData>[]
   data: TData[]
   trackBy?: keyof TData | ((row: TData) => string)
   loading?: boolean
@@ -77,7 +96,9 @@ export interface DataTableProps<TData> {
 
 const STORAGE_PREFIX = 'next-base-column-visibility-'
 
-function readStoredVisibility(storageKey: string): VisibilityState | null {
+function readStoredVisibility(
+  storageKey: string,
+): ColumnVisibilityState | null {
   if (typeof window === 'undefined') return null
   try {
     const raw = localStorage.getItem(STORAGE_PREFIX + storageKey)
@@ -89,7 +110,7 @@ function readStoredVisibility(storageKey: string): VisibilityState | null {
       !Array.isArray(parsed) &&
       Object.values(parsed).every((v) => typeof v === 'boolean')
     ) {
-      return parsed as VisibilityState
+      return parsed as ColumnVisibilityState
     }
     return null
   } catch {
@@ -97,7 +118,10 @@ function readStoredVisibility(storageKey: string): VisibilityState | null {
   }
 }
 
-function writeStoredVisibility(storageKey: string, state: VisibilityState) {
+function writeStoredVisibility(
+  storageKey: string,
+  state: ColumnVisibilityState,
+) {
   try {
     localStorage.setItem(STORAGE_PREFIX + storageKey, JSON.stringify(state))
   } catch {
@@ -106,15 +130,15 @@ function writeStoredVisibility(storageKey: string, state: VisibilityState) {
 }
 
 /**
- * Derives the initial `VisibilityState` from `columnVisibilityOptions`. Only
+ * Derives the initial `ColumnVisibilityState` from `columnVisibilityOptions`. Only
  * `defaultVisible: false` columns are added (as `{ [id]: false }`); everything
  * else uses react-table's default (visible).
  */
 function deriveDefaultVisibility(
   options?: ColumnVisibilityOption[],
-): VisibilityState {
+): ColumnVisibilityState {
   if (!options) return {}
-  const result: VisibilityState = {}
+  const result: ColumnVisibilityState = {}
   for (const opt of options) {
     if (opt.alwaysVisible) continue
     if (opt.defaultVisible === false) result[opt.id] = false
@@ -122,7 +146,7 @@ function deriveDefaultVisibility(
   return result
 }
 
-export default function DataTable<TData>({
+export default function DataTable<TData extends RowData>({
   columns,
   data,
   trackBy,
@@ -145,7 +169,7 @@ export default function DataTable<TData>({
   // `defaultVisible` field stays the single source of truth.
   const defaultVisibility = deriveDefaultVisibility(columnVisibilityOptions)
   const [columnVisibility, setColumnVisibility] =
-    useState<VisibilityState>(defaultVisibility)
+    useState<ColumnVisibilityState>(defaultVisibility)
 
   const didHydrateRef = useRef(false)
   useEffect(() => {
@@ -153,8 +177,10 @@ export default function DataTable<TData>({
     didHydrateRef.current = true
     if (!storageKey) return
     const stored = readStoredVisibility(storageKey)
+    // Hydrate once on mount (storageKey is expected to be a stable const); the
+    // post-mount setState is the deliberate second pass described above.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (stored) setColumnVisibility({ ...defaultVisibility, ...stored })
-    // Hydrate once on mount (storageKey is expected to be a stable const).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -174,16 +200,12 @@ export default function DataTable<TData>({
     setColumnVisibility(deriveDefaultVisibility(columnVisibilityOptions))
   }, [columnVisibilityOptions])
 
-  const table = useReactTable({
+  const table = useTable({
+    features: dataTableFeatures,
     data,
     columns,
-    pageCount: pagination?.lastPage ?? -1,
     state: { columnVisibility },
     onColumnVisibilityChange: setColumnVisibility,
-    getCoreRowModel: getCoreRowModel(),
-    manualPagination: true,
-    manualSorting: true,
-    manualFiltering: true,
   })
 
   const getRowKey = useCallback(

@@ -1,7 +1,7 @@
 'use client'
 
 import { SlidersHorizontal } from 'lucide-react'
-import type { VisibilityState } from '@tanstack/react-table'
+import type { ColumnVisibilityState } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -16,8 +16,8 @@ import type { ColumnVisibilityOption } from '@/types/dataTable'
 
 interface DataTableColumnVisibilityProps {
   options: ColumnVisibilityOption[]
-  columnVisibility: VisibilityState
-  onColumnVisibilityChange: (next: VisibilityState) => void
+  columnVisibility: ColumnVisibilityState
+  onColumnVisibilityChange: (next: ColumnVisibilityState) => void
   onReset: () => void
 }
 

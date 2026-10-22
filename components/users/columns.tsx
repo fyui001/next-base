@@ -1,5 +1,5 @@
-import type { ColumnDef } from '@tanstack/react-table'
 import { Badge } from '@/components/ui/badge'
+import type { DataTableColumnDef } from '@/components/common/DataTable'
 import type { ColumnVisibilityOption } from '@/types/dataTable'
 import type { User, UserStatus } from '@/repository/usersRepository'
 
@@ -9,7 +9,7 @@ const STATUS_STYLES: Record<UserStatus, string> = {
   suspended: 'border-transparent bg-warning text-warning-foreground',
 }
 
-export const userColumns: ColumnDef<User, unknown>[] = [
+export const userColumns: DataTableColumnDef<User>[] = [
   {
     accessorKey: 'name',
     header: 'Name',
