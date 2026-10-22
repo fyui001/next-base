@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/nextjs'
 import { expect, userEvent, waitFor, within } from 'storybook/test'
-import type { ColumnDef } from '@tanstack/react-table'
-import DataTable from '@/components/common/DataTable'
+import DataTable, {
+  type DataTableColumnDef,
+} from '@/components/common/DataTable'
 import { Badge } from '@/components/ui/badge'
 import type { ColumnVisibilityOption } from '@/types/dataTable'
 
@@ -43,7 +44,7 @@ const rows: DemoRow[] = Array.from({ length: 30 }, (_, i) => {
   }
 })
 
-const columns: ColumnDef<DemoRow, unknown>[] = [
+const columns: DataTableColumnDef<DemoRow>[] = [
   {
     accessorKey: 'name',
     header: 'Name',
