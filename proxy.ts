@@ -10,7 +10,7 @@ const THEME_COOKIE = 'next-base-theme-mode'
  * cookie is unset or unknown, falls back to `system`, and the client resolves
  * `prefers-color-scheme`.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const requestHeaders = new Headers(request.headers)
 
   const themeCookie = request.cookies.get(THEME_COOKIE)?.value
